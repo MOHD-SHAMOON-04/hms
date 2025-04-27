@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Management System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+  <div class="app-container">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1>Hostel<span>Hub</span></h1>
+          <p>Manage your hostel experience</p>
+        </div>
+        <div class="auth-body">
+          <form id="login-form">
+            <div class="form-group">
+              <label for="credentials">Student Id/Warden Mail</label>
+              <input type="text" id="credentials" placeholder="Enter your Credentials" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            <div class="form-group">
+              <label for="role">Role</label>
+              <select id="role" required>
+                <option value="">Select your role</option>
+                <option value="student">student</option>
+                <option value="warden">warden</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

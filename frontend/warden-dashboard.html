@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warden Dashboard - Hostel Management System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>Hostel<span>Hub</span></h1>
+        <!-- <div class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div> -->
+      </div>
+      <div class="sidebar-menu">
+
+        <div class="sidebar-item active" data-page="overview">
+          <i class="fas fa-home"></i>
+          <span>Overview</span>
+        </div>
+
+        <div class="sidebar-item" data-page="rooms">
+          <i class="fas fa-bed"></i>
+          <span>Room Management</span>
+        </div>
+
+        <div class="sidebar-item" data-page="students">
+          <i class="fas fa-user-graduate"></i>
+          <span>Students</span>
+        </div>
+
+        <div class="sidebar-item" data-page="maintenance">
+          <i class="fas fa-wrench"></i>
+          <span>Maintenance</span>
+        </div>
+
+        <div class="sidebar-item" data-page="payments">
+          <i class="fas fa-credit-card"></i>
+          <span>Payments</span>
+        </div>
+
+        <div class="sidebar-item" data-page="events">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Events</span>
+        </div>
+
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="content">
+      
+      <!-- Navbar -->
+      <div class="navbar">
+        <div class="navbar-title">
+          <h1 id="page-title">Warden Dashboard</h1>
+        </div>
+        <div class="user-dropdown">
+          <div class="user-dropdown-toggle">
+            <img src="https://ui-avatars.com/api/?name=Jane+Smith&background=0055FF&color=fff" alt="User avatar">
+            <span id="user-name">Jane Smith</span>
+            <i class="fas fa-chevron-down ml-8"></i>
+          </div>
+          <div class="user-dropdown-menu">
+            <div class="user-dropdown-item">
+              <i class="fas fa-user"></i>
+              <span>Profile</span>
+            </div>
+            <div class="user-dropdown-item logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Overview Page -->
+      <div class="page-content" id="overview-page">
+        <div class="dashboard-cards">
+          <div class="stat-card">
+            <div class="stat-icon bg-primary">
+              <i class="fas fa-bed"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="total-rooms">4</div>
+              <div class="stat-label">Total Rooms</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon bg-success">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="total-students">1</div>
+              <div class="stat-label">Total Students</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon bg-warning">
+              <i class="fas fa-tools"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="maintenance-requests">1</div>
+              <div class="stat-label">Maintenance Requests</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon" style="background-color: #7367F0;">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="upcoming-events">2</div>
+              <div class="stat-label">Upcoming Events</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-6">
+            <div class="panel">
+              <div class="panel-header">
+                <h2 class="panel-title">Recent Activities</h2>
+              </div>
+              <div class="panel-body">
+                <div class="activity-list" id="activity-list">
+                  <!-- Activity items will be populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-6">
+            <div class="panel">
+              <div class="panel-header">
+                <h2 class="panel-title">Occupancy Rate</h2>
+              </div>
+              <div class="panel-body">
+                <div class="occupancy-chart" id="occupancy-chart">
+                  <!-- Occupancy chart will be populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Rooms Management Page -->
+      <div class="page-content hidden" id="rooms-page">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Room Management</h2>
+            <button class="btn btn-primary" id="allocate-room-btn">
+              <i class="fas fa-plus"></i> Allocate Room
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="rooms-list" id="rooms-list">
+              <!-- Rooms will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Allocate Room Modal -->
+        <div class="modal" id="allocate-room-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Allocate Room</h2>
+              <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+              <form id="allocate-room-form">
+                <div class="form-group">
+                  <label for="student-select">Student</label>
+                  <select id="student-select" required>
+                    <!-- Students will be populated by JavaScript -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="room-select">Room</label>
+                  <select id="room-select" required>
+                    <!-- Rooms will be populated by JavaScript -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bed-select">Bed</label>
+                  <select id="bed-select" required>
+                    <!-- Beds will be populated by JavaScript -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary">Allocate</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Students Page -->
+      <div class="page-content hidden" id="students-page">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Student Management</h2>
+            <button class="btn btn-primary" id="add-student-btn">
+              <i class="fas fa-plus"></i> Add Student
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="students-list" id="students-list">
+              <!-- Students will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Add Student Modal -->
+        <div class="modal" id="add-student-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Add Student</h2>
+              <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+              <form id="add-student-form">
+                <div class="form-group">
+                  <label for="student-name">Name</label>
+                  <input type="text" id="student-name" placeholder="Enter student name" required>
+                </div>
+                <div class="form-group">
+                  <label for="student-username">Username</label>
+                  <input type="text" id="student-username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                  <label for="student-password">Password</label>
+                  <input type="password" id="student-password" placeholder="Enter password" required>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary">Add Student</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Maintenance Page -->
+      <div class="page-content hidden" id="maintenance-page">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Maintenance Requests</h2>
+          </div>
+          <div class="panel-body">
+            <div class="maintenance-list" id="maintenance-list">
+              <!-- Maintenance requests will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Update Maintenance Modal -->
+        <div class="modal" id="update-maintenance-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Update Maintenance Status</h2>
+              <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+              <form id="update-maintenance-form">
+                <input type="hidden" id="maintenance-id">
+                <div class="form-group">
+                  <label for="maintenance-status">Status</label>
+                  <select id="maintenance-status" required>
+                    <option value="Received">Received</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="maintenance-notes">Notes</label>
+                  <textarea id="maintenance-notes" rows="4" placeholder="Add notes about the status update"></textarea>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary">Update Status</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Payments Page -->
+      <div class="page-content hidden" id="payments-page">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Payment Management</h2>
+            <button class="btn btn-primary" id="add-payment-btn">
+              <i class="fas fa-plus"></i> Add Payment
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="payments-list" id="payments-list">
+              <!-- Payments will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Add Payment Modal -->
+        <div class="modal" id="add-payment-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Add Payment</h2>
+              <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+              <form id="add-payment-form">
+                <div class="form-group">
+                  <label for="payment-student">Student</label>
+                  <select id="payment-student" required>
+                    <!-- Students will be populated by JavaScript -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="payment-amount">Amount</label>
+                  <input type="number" id="payment-amount" step="0.01" placeholder="Enter amount" required>
+                </div>
+                <div class="form-group">
+                  <label for="payment-type">Type</label>
+                  <select id="payment-type" required>
+                    <option value="Rent">Rent</option>
+                    <option value="Deposit">Deposit</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="payment-due-date">Due Date</label>
+                  <input type="date" id="payment-due-date" required>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary">Add Payment</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Events Page -->
+      <div class="page-content hidden" id="events-page">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Event Management</h2>
+            <button class="btn btn-primary" id="add-event-btn">
+              <i class="fas fa-plus"></i> Add Event
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="events-list" id="events-list">
+              <!-- Events will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Add Event Modal -->
+        <div class="modal" id="add-event-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Add Event</h2>
+              <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+              <form id="add-event-form">
+                <div class="form-group">
+                  <label for="event-title">Title</label>
+                  <input type="text" id="event-title" placeholder="Enter event title" required>
+                </div>
+                <div class="form-group">
+                  <label for="event-description">Description</label>
+                  <textarea id="event-description" rows="4" placeholder="Enter event description" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="event-date">Date and Time</label>
+                  <input type="datetime-local" id="event-date" required>
+                </div>
+                <div class="form-group">
+                  <label for="event-location">Location</label>
+                  <input type="text" id="event-location" placeholder="Enter event location" required>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary">Add Event</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal component -->
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: rgb(255, 255, 255);
+      margin: 10% auto;
+      padding: 0;
+      width: 90%;
+      max-width: 500px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    .modal-header {
+      padding: var(--space-16);
+      border-bottom: 1px solid var(--color-neutral-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      margin-bottom: 0;
+    }
+    
+    .close-modal {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .modal-body {
+      padding: var(--space-16);
+    }
+  </style>
+  
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/warden-dashboard.js"></script>
+</body>
+</html>

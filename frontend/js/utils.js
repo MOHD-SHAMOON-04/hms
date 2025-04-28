@@ -129,46 +129,86 @@ const initializeData = async () => {
     } else {
       showNotification('Failed to Fetch Data', 'error');
     }
-  } else if (currentUser.role === 'warden') {
+  }
+  // SEPERATION OF CONCERNS ------------------------------------------------------
+  else if (currentUser.role === 'warden') {
     // Fetch warden-specific data
     // - rooms (for wardens only)
     // - maintenance requests for the warden
     // - events for the warden
 
-    // const studentId = currentUser.studentId;
-    // const response = await fetch(`http://localhost:3000/api/student/init/`,
+    const email = currentUser.email;
+    const response = await fetch(`http://localhost:3000/api/warden/init/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+        body: JSON.stringify({ email }),
+      }
+    );
+    const data = await response.json();
+    console.log(data);
     //   {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Authorization: `Bearer ${currentUser.token}`,
-    //     },
-    //     body: JSON.stringify({ student_id: studentId }),
-    //   }
-    // );
-    // const data = await response.json();
-    // console.log(data);
-    // if (data.success) {
-    //   showNotification('Data Fetched Successfully', 'success');
-    //   const newUserData = {
-    //     ...currentUser,
-    //     roomNumber: data.roomDetails.roomNumber,
-    //     bedNumber: 'A',
-    //     hostelId: data.roomDetails.hostel_id,
-    //   }
-    //   // Save the updated user data to local storage
-    //   saveToStorage('currentUser', newUserData);
-    //   // Save the room details, maintenance requests, and events to local storage
-    //   const newRoomDetails = {
-    //     ...data.roomDetails,
-    //     occupiedBeds: getBedsFromCapacity(data.roomDetails.capacity),
-    //   };
-    //   saveToStorage('roomDetails', newRoomDetails);
-    //   saveToStorage('maintenanceRequests', data.maintenanceRequests);
-    //   saveToStorage('events', data.events);
-    // } else {
-    //   showNotification('Failed to Fetch Data', 'error');
+    //     "success": true,
+    //     "rooms": [
+    //         {
+    //             "room_id": "R001",
+    //             "roomNumber": 101,
+    //             "capacity": 4,
+    //             "hostel_id": "H001",
+    //             "student_count": 1
+    //         }
+    //     ],
+    //     "maintenanceRequests": [
+    //         {
+    //             "complaint_id": "ma1300pfju1pvgg0gtd",
+    //             "title": "H2O filter not working",
+    //             "description": "since today morning..., please help",
+    //             "student_id": 202308223,
+    //             "created_date": "2025-04-28"
+    //         }
+    //     ],
+    //     "events": [
+    //         {
+    //             "event_id": "E001",
+    //             "title": "Cultural Night",
+    //             "description": "An evening of music and dance",
+    //             "date": "2025-05-10",
+    //             "location": "Auditorium"
+    //         }
+    //     ],
+    //     "students": [
+    //         {
+    //             "username": "user001",
+    //             "student_id": 202308223,
+    //             "email": "user001@mail.com",
+    //             "phone_num": "1234567890",
+    //             "hostel_id": "H001",
+    //             "room_id": "R001",
+    //             "roomNumber": 101
+    //         }
+    //     ]
     // }
+    if (data.success) {
+      showNotification('Data Fetched Successfully', 'success');
+      const numberOfStudents = data.rooms.reduce((total, room) => total + room.student_count, 0);
+      const newUserData = {
+        ...currentUser,
+        numberOfStudents,
+        hostelId: data.rooms[0].hostel_id,
+      }
+      //   // Save the updated user data to local storage
+      saveToStorage('currentUser', newUserData);
+      //   // Save the room details, maintenance requests, and events to local storage
+      saveToStorage('rooms', data.rooms);
+      saveToStorage('maintenanceRequests', data.maintenanceRequests);
+      saveToStorage('events', data.events);
+      saveToStorage('students', data.students);
+    } else {
+      showNotification('Failed to Fetch Data', 'error');
+    }
   }
 
 

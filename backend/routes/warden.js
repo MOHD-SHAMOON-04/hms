@@ -18,27 +18,55 @@ router.post('/init', (req, res) => {
         const { hostel_id } = warden;
 
         db.serialize(() => {
-            // Fetch Rooms under Warden
-            db.all(`SELECT * FROM Rooms WHERE hostel_id = ?`, [hostel_id], (errRooms, rooms) => {
+            // Fetch Rooms under Warden along with number of students in each room
+            db.all(`
+                SELECT 
+                    r.*, 
+                    (SELECT COUNT(*) FROM Students s WHERE s.room_id = r.room_id) AS student_count
+                FROM Rooms r
+                WHERE r.hostel_id = ?
+            `, [hostel_id], (errRooms, rooms) => {
                 if (errRooms) return res.json({ success: false, message: 'Error fetching rooms' });
 
                 // Fetch Maintenance Requests for Students in Hostel from Complaints
-                db.all(`SELECT c.* FROM Complaints c 
-                          JOIN Students s ON c.student_id = s.student_id 
-                            WHERE s.hostel_id = ?`, [hostel_id], (errMaint, maintenanceRequests) => {
+                db.all(`
+                    SELECT c.* 
+                    FROM Complaints c 
+                    JOIN Students s ON c.student_id = s.student_id 
+                    WHERE s.hostel_id = ?
+                `, [hostel_id], (errMaint, maintenanceRequests) => {
                     if (errMaint) return res.json({ success: false, message: 'Error fetching maintenance requests' });
 
-                    // Fetch Events
-                    db.all(`SELECT e.* FROM Events e 
-                              JOIN Events_R_Hostel er ON e.event_id = er.event_id 
-                                WHERE er.hostel_id = ?`, [hostel_id], (errEvents, events) => {
+                    // Fetch Events linked to the Hostel
+                    db.all(`
+                        SELECT e.* 
+                        FROM Events e 
+                        JOIN Events_R_Hostel er ON e.event_id = er.event_id 
+                        WHERE er.hostel_id = ?
+                    `, [hostel_id], (errEvents, events) => {
                         if (errEvents) return res.json({ success: false, message: 'Error fetching events' });
 
-                        res.json({
-                            success: true,
-                            rooms,
-                            maintenanceRequests,
-                            events
+                        // Fetch Students under Warden with proper room number
+                        db.all(`SELECT 
+                                s.username,
+                                s.student_id,
+                                s.email,
+                                s.phone_num,
+                                s.hostel_id,
+                                s.room_id,
+                                r.roomNumber
+                                FROM Students s
+                                JOIN Rooms r ON s.room_id = r.room_id
+                                WHERE s.hostel_id = ?`, [hostel_id], (errStudents, students) => {
+                            if (errStudents) return res.json({ success: false, message: 'Error fetching students' });
+
+                            res.json({
+                                success: true,
+                                rooms,
+                                maintenanceRequests,
+                                events,
+                                students
+                            });
                         });
                     });
                 });

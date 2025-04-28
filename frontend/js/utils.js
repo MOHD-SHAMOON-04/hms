@@ -107,7 +107,7 @@ const initializeData = async () => {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (data.success) {
       showNotification('Data Fetched Successfully', 'success');
       const newUserData = {

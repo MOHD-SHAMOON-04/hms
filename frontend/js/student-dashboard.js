@@ -2,6 +2,9 @@
 
 // Ensure that only students can access this page
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize data
+  initializeData();
+
   protectRoute(['student']);
 
   // Set user name in the UI
@@ -11,21 +14,24 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#avatar').src = `https://ui-avatars.com/api/?name=${user.name}&background=random&color=fff`;
   }
 
-  // Initialize dashboard
-  initializeDashboard();
+  setTimeout(() => {
+    // Initialize dashboard
+    initializeDashboard();
 
-  // Add event listeners for navigation
-  setupNavigation();
+    // Add event listeners for navigation
+    setupNavigation();
 
-  // Setup user dropdown
-  setupUserDropdown();
+    // Setup user dropdown
+    setupUserDropdown();
 
-  // Initialize page-specific content
-  loadOverviewPage();
-  loadRoomPage();
-  loadMaintenancePage();
-  loadPaymentsPage();
-  loadEventsPage();
+    // Initialize page-specific content
+    loadOverviewPage();
+    loadRoomPage();
+    loadMaintenancePage();
+    loadPaymentsPage();
+    loadEventsPage();
+  }
+    , 250);
 });
 
 // Initialize dashboard with user data
@@ -33,9 +39,9 @@ function initializeDashboard() {
   const user = getCurrentUser();
 
   // Set room number in overview
-  $('#room-number').textContent = `Room ${user.roomNumber}`;
+  $('#room-number').textContent = `Room ${user.roomNumber ? user.roomNumber : 'ABC'}`;
   // Set hostel name in overview
-  $('#hostel-name').textContent = `Hostel ${user.hostelId}`;
+  $('#hostel-name').textContent = `Hostel ${user.hostelId ? user.hostelId : '007'}`;
 
   // Load maintenance requests count
   const maintenanceRequests = getFromStorage('maintenanceRequests') || [];

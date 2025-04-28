@@ -280,4 +280,4 @@ const initializeData = async () => {
 };
 
 // Call initializeData to set up demo data
-document.addEventListener('DOMContentLoaded', initializeData);
+// document.addEventListener('DOMContentLoaded', initializeData);

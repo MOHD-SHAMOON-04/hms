@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
   <div class="dashboard-container">
 
@@ -48,7 +50,7 @@
 
       </div>
     </div>
-    
+
     <!-- Main Content -->
     <div class="content">
 
@@ -63,7 +65,8 @@
         <!-- dropdown -->
         <div class="user-dropdown">
           <div class="user-dropdown-toggle">
-            <img id="avatar" src="https://ui-avatars.com/api/?name=Default+Name&background=random&color=fff" alt="User avatar">
+            <img id="avatar" src="https://ui-avatars.com/api/?name=Default+Name&background=random&color=fff"
+              alt="User avatar">
             <span id="user-name">Default</span>
             <i class="fas fa-chevron-down ml-8"></i>
           </div>
@@ -78,20 +81,25 @@
             </div>
           </div>
         </div>
-          
+
       </div>
-      
+
       <!-- Overview Page -->
       <div class="page-content" id="overview-page">
 
         <div class="dashboard-cards">
           <!-- hostel card -->
+          <style>
+            i.fa-hotel , i.fa-calendar-check {
+              color: #ffffff;
+            }
+          </style>
           <div class="stat-card">
-            <div class="stat-icon" style="background-color: #4cff79;">
-              <i class="fas fa-home"></i>
+            <div class="stat-icon" style="background-color: #e78645;">
+              <i class="fas fa-hotel"></i>
             </div>
             <div class="stat-content">
-              <div class="stat-value" id="hostel-name">AMK boys' hostel</div>
+              <div class="stat-value" id="hostel-name">Hostel XYZ</div>
               <div class="stat-label">Your Hostel</div>
             </div>
           </div>
@@ -106,7 +114,7 @@
               <div class="stat-label">Your Room</div>
             </div>
           </div>
-          
+
           <!-- Rent card -->
           <div class="stat-card">
             <div class="stat-icon bg-success">
@@ -117,7 +125,7 @@
               <div class="stat-label">Rent Status</div>
             </div>
           </div>
-          
+
           <!-- Maintenance card -->
           <div class="stat-card">
             <div class="stat-icon bg-warning">
@@ -128,7 +136,7 @@
               <div class="stat-label">Pending Maintenance</div>
             </div>
           </div>
-          
+
           <!-- Upcoming Events card -->
           <div class="stat-card">
             <div class="stat-icon" style="background-color: #7367F0;">
@@ -140,7 +148,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- recent activity pannel -->
         <div class="panel">
           <!-- pannel header -->
@@ -156,7 +164,7 @@
         </div>
 
       </div>
-      
+
       <!-- Room Page -->
       <div class="page-content hidden" id="room-page">
         <div class="panel">
@@ -173,7 +181,7 @@
 
         </div>
       </div>
-      
+
       <!-- Maintenance Page -->
       <div class="page-content hidden" id="maintenance-page">
         <div class="panel">
@@ -189,7 +197,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- New Maintenance Request Modal -->
         <div class="modal" id="maintenance-modal">
           <div class="modal-content">
@@ -205,7 +213,8 @@
                 </div>
                 <div class="form-group">
                   <label for="maintenance-description">Description</label>
-                  <textarea id="maintenance-description" rows="4" placeholder="Detailed description of the issue" required></textarea>
+                  <textarea id="maintenance-description" rows="4" placeholder="Detailed description of the issue"
+                    required></textarea>
                 </div>
                 <div class="form-group">
                   <button type="submit" class="btn btn-primary">Submit Request</button>
@@ -215,7 +224,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Payments Page -->
       <div class="page-content hidden" id="payments-page">
         <div class="dashboard-cards">
@@ -228,7 +237,7 @@
               <div class="stat-label">Outstanding Balance</div>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon bg-primary">
               <i class="fas fa-calendar"></i>
@@ -239,7 +248,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="panel">
           <div class="panel-header">
             <h2 class="panel-title">Payment History</h2>
@@ -251,7 +260,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Events Page -->
       <div class="page-content hidden" id="events-page">
         <div class="panel">
@@ -267,7 +276,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Modal component -->
   <style>
     .modal {
@@ -281,7 +290,7 @@
       z-index: 1000;
       overflow: auto;
     }
-    
+
     .modal-content {
       background-color: white;
       margin: 10% auto;
@@ -292,7 +301,7 @@
       box-shadow: var(--shadow-lg);
       animation: slideUp 0.3s ease-out;
     }
-    
+
     .modal-header {
       padding: var(--space-16);
       border-bottom: 1px solid var(--color-neutral-200);
@@ -300,23 +309,24 @@
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .modal-header h2 {
       margin-bottom: 0;
     }
-    
+
     .close-modal {
       font-size: 1.5rem;
       cursor: pointer;
     }
-    
+
     .modal-body {
       padding: var(--space-16);
     }
   </style>
-  
+
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/student-dashboard.js"></script>
 </body>
+
 </html>

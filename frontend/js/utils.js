@@ -86,7 +86,7 @@ const debounce = (func, delay = 300) => {
 function getBedsFromCapacity(capacity) {
   const beds = [];
   for (let i = 0; i < capacity - 1; i++) {
-    const bedNumber = String.fromCharCode(65 + i); // A, B, C, ...
+    const bedNumber = String.fromCharCode(65 + i);
     beds.push(bedNumber);
   }
   return beds;
@@ -107,7 +107,7 @@ const initializeData = async () => {
       }
     );
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     if (data.success) {
       showNotification('Data Fetched Successfully', 'success');
       const newUserData = {
@@ -116,9 +116,7 @@ const initializeData = async () => {
         bedNumber: 'A',
         hostelId: data.roomDetails.hostel_id,
       }
-      // Save the updated user data to local storage
       saveToStorage('currentUser', newUserData);
-      // Save the room details, maintenance requests, and events to local storage
       const newRoomDetails = {
         ...data.roomDetails,
         occupiedBeds: getBedsFromCapacity(data.roomDetails.capacity),
@@ -132,11 +130,6 @@ const initializeData = async () => {
   }
   // SEPERATION OF CONCERNS ------------------------------------------------------
   else if (currentUser.role === 'warden') {
-    // Fetch warden-specific data
-    // - rooms (for wardens only)
-    // - maintenance requests for the warden
-    // - events for the warden
-
     const email = currentUser.email;
     const response = await fetch(`http://localhost:3000/api/warden/init/`,
       {
@@ -150,47 +143,6 @@ const initializeData = async () => {
     );
     const data = await response.json();
     console.log(data);
-    //   {
-    //     "success": true,
-    //     "rooms": [
-    //         {
-    //             "room_id": "R001",
-    //             "roomNumber": 101,
-    //             "capacity": 4,
-    //             "hostel_id": "H001",
-    //             "student_count": 1
-    //         }
-    //     ],
-    //     "maintenanceRequests": [
-    //         {
-    //             "complaint_id": "ma1300pfju1pvgg0gtd",
-    //             "title": "H2O filter not working",
-    //             "description": "since today morning..., please help",
-    //             "student_id": 202308223,
-    //             "created_date": "2025-04-28"
-    //         }
-    //     ],
-    //     "events": [
-    //         {
-    //             "event_id": "E001",
-    //             "title": "Cultural Night",
-    //             "description": "An evening of music and dance",
-    //             "date": "2025-05-10",
-    //             "location": "Auditorium"
-    //         }
-    //     ],
-    //     "students": [
-    //         {
-    //             "username": "user001",
-    //             "student_id": 202308223,
-    //             "email": "user001@mail.com",
-    //             "phone_num": "1234567890",
-    //             "hostel_id": "H001",
-    //             "room_id": "R001",
-    //             "roomNumber": 101
-    //         }
-    //     ]
-    // }
     if (data.success) {
       showNotification('Data Fetched Successfully', 'success');
       const numberOfStudents = data.rooms.reduce((total, room) => total + room.student_count, 0);
@@ -199,9 +151,7 @@ const initializeData = async () => {
         numberOfStudents,
         hostelId: data.rooms[0].hostel_id,
       }
-      //   // Save the updated user data to local storage
       saveToStorage('currentUser', newUserData);
-      //   // Save the room details, maintenance requests, and events to local storage
       saveToStorage('rooms', data.rooms);
       saveToStorage('maintenanceRequests', data.maintenanceRequests);
       saveToStorage('events', data.events);
@@ -210,114 +160,4 @@ const initializeData = async () => {
       showNotification('Failed to Fetch Data', 'error');
     }
   }
-
-
-
-  // example data for students and wardens
-  //   const user =
-  //     {
-  //       studentId: '1' // or NULL,
-  //       email: 'admin@mail.com' // or NULL,
-  //       role: 'student' // or 'warden',
-  //       name: 'John Doe',
-  //       roomNumber: '101' // or NULL,
-  //       bedNumber: 'A' // or NULL,
-  //       token: 'JWT_TOKEN'
-  //     }
-  // Initialize rooms if they don't exist
-  // if (!getFromStorage('rooms')) {
-  //   const rooms = [
-  //     {
-  //       id: '101',
-  //       number: '101',
-  //       floor: '1',
-  //       capacity: 4,
-  //       occupiedBeds: ['A'],
-  //       type: 'Standard',
-  //     },
-  //     {
-  //       id: '102',
-  //       number: '102',
-  //       floor: '1',
-  //       capacity: 4,
-  //       occupiedBeds: [],
-  //       type: 'Standard',
-  //     },
-  //     {
-  //       id: '201',
-  //       number: '201',
-  //       floor: '2',
-  //       capacity: 2,
-  //       occupiedBeds: [],
-  //       type: 'Premium',
-  //     },
-  //     {
-  //       id: '202',
-  //       number: '202',
-  //       floor: '2',
-  //       capacity: 2,
-  //       occupiedBeds: [],
-  //       type: 'Premium',
-  //     },
-  //   ];
-  //   saveToStorage('rooms', rooms);
-  // }
-
-  // Initialize maintenance requests if they don't exist
-  // if (!getFromStorage('maintenanceRequests')) {
-  //   const maintenanceRequests = [
-  //     {
-  //       id: '1',
-  //       userId: '1',
-  //       roomNumber: '101',
-  //       title: 'Broken light fixture',
-  //       description: 'The ceiling light in room 101 is flickering and sometimes doesn\'t turn on.',
-  //       status: 'Received',
-  //       createdAt: '2023-05-15T10:30:00',
-  //       updatedAt: '2023-05-15T10:30:00',
-  //     },
-  //   ];
-  //   saveToStorage('maintenanceRequests', maintenanceRequests);
-  // }
-
-  // Initialize payment records if they don't exist
-  // HOLD FOR NOW
-  // example payment record:
-  //   const payments = 
-  //     {
-  //       id: '1',
-  //       userId: '1',
-  //       amount: 500,
-  //       type: 'Rent',
-  //       status: 'Paid',
-  //       date: '2023-05-01T09:00:00',
-  //       dueDate: '2023-05-10T00:00:00',
-  //       receiptNumber: 'REC-001',
-  //     }
-
-  // Initialize events if they don't exist
-  // if (!getFromStorage('events')) {
-  //   const events = [
-  //     {
-  //       id: '1',
-  //       title: 'Welcome Party',
-  //       description: 'Welcome party for new residents',
-  //       date: '2023-06-15T18:00:00',
-  //       location: 'Common Room',
-  //       attendees: [],
-  //     },
-  //     {
-  //       id: '2',
-  //       title: 'Maintenance Day',
-  //       description: 'General maintenance of all facilities',
-  //       date: '2023-06-10T10:00:00',
-  //       location: 'All Floors',
-  //       attendees: [],
-  //     },
-  //   ];
-  //   saveToStorage('events', events);
-  // }
 };
-
-// Call initializeData to set up demo data
-// document.addEventListener('DOMContentLoaded', initializeData);

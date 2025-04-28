@@ -113,11 +113,6 @@ function loadOverviewPage() {
       message: 'Welcome to the Hostel Management System!',
       date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2) // 2 days ago
     },
-    // {
-    //   type: 'success',
-    //   message: 'Your rent payment was received.',
-    //   date: new Date(Date.now() - 1000 * 60 * 60 * 24) // 1 day ago
-    // },
     {
       type: 'warning',
       message: 'Maintenance request from your room has been received.',
@@ -491,15 +486,6 @@ function setupMaintenanceForm() {
     const data = await response.json();
     console.log(data);
 
-    // expected response from server
-    // {
-    //   "complaint_id": "ma1300pfju1pvgg0gtd",
-    //   "student_id": 202308223,
-    //   "title": "H2O filter not working",
-    //   "description": "since today morning..., please help",
-    //   "created_date": "2025-04-28T12:55:39.411Z"
-    // }
-
     // Save to storage
     const requests = getFromStorage('maintenanceRequests') || [];
     requests.push(data);
@@ -579,14 +565,14 @@ function loadPaymentsPage() {
 
     paymentList.appendChild(table);
 
-    // Add event listeners for receipt buttons
-    const receiptButtons = paymentList.querySelectorAll('.view-receipt');
-    receiptButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const receiptNumber = button.getAttribute('data-receipt');
-        showReceipt(receiptNumber, userPayments);
-      });
-    });
+    // // Add event listeners for receipt buttons
+    // const receiptButtons = paymentList.querySelectorAll('.view-receipt');
+    // receiptButtons.forEach(button => {
+    //   button.addEventListener('click', () => {
+    //     const receiptNumber = button.getAttribute('data-receipt');
+    //     showReceipt(receiptNumber, userPayments);
+    //   });
+    // });
   }
 
   // Add styling for payment table
@@ -678,83 +664,80 @@ function loadPaymentsPage() {
   document.head.appendChild(style);
 }
 
-// Show receipt modal
-function showReceipt(receiptNumber, payments) {
-  // Find payment by receipt number
-  const payment = payments.find(p => p.receiptNumber === receiptNumber);
+// // Show receipt modal
+// function showReceipt(receiptNumber, payments) {
+//   // Find payment by receipt number
+//   const payment = payments.find(p => p.receiptNumber === receiptNumber);
 
-  if (!payment) return;
+//   if (!payment) return;
 
-  // Create modal if it doesn't exist
-  let receiptModal = document.querySelector('.receipt-modal');
+//   // Create modal if it doesn't exist
+//   let receiptModal = document.querySelector('.receipt-modal');
 
-  if (!receiptModal) {
-    receiptModal = document.createElement('div');
-    receiptModal.className = 'receipt-modal';
-    document.body.appendChild(receiptModal);
-  }
+//   if (!receiptModal) {
+//     receiptModal = document.createElement('div');
+//     receiptModal.className = 'receipt-modal';
+//     document.body.appendChild(receiptModal);
+//   }
 
-  // Set modal content
-  receiptModal.innerHTML = `
-    <div class="receipt-content">
-      <div class="receipt-header">
-        <h2>Payment Receipt</h2>
-        <p>Receipt Number: ${payment.receiptNumber}</p>
-      </div>
-      <div class="receipt-body">
-        <div class="receipt-row">
-          <div class="receipt-label">Date:</div>
-          <div class="receipt-value">${formatDate(payment.date)}</div>
-        </div>
-        <div class="receipt-row">
-          <div class="receipt-label">Payment Type:</div>
-          <div class="receipt-value">${payment.type}</div>
-        </div>
-        <div class="receipt-row">
-          <div class="receipt-label">Amount Paid:</div>
-          <div class="receipt-value">${formatCurrency(payment.amount)}</div>
-        </div>
-        <div class="receipt-row">
-          <div class="receipt-label">Status:</div>
-          <div class="receipt-value">${payment.status}</div>
-        </div>
-      </div>
-      <button class="btn btn-primary print-button">
-        <i class="fas fa-print"></i> Print Receipt
-      </button>
-      <div class="receipt-footer">
-        <p>Thank you for your payment.</p>
-        <p>This is an electronic receipt, no signature required.</p>
-      </div>
-    </div>
-  `;
+//   // Set modal content
+//   receiptModal.innerHTML = `
+//     <div class="receipt-content">
+//       <div class="receipt-header">
+//         <h2>Payment Receipt</h2>
+//         <p>Receipt Number: ${payment.receiptNumber}</p>
+//       </div>
+//       <div class="receipt-body">
+//         <div class="receipt-row">
+//           <div class="receipt-label">Date:</div>
+//           <div class="receipt-value">${formatDate(payment.date)}</div>
+//         </div>
+//         <div class="receipt-row">
+//           <div class="receipt-label">Payment Type:</div>
+//           <div class="receipt-value">${payment.type}</div>
+//         </div>
+//         <div class="receipt-row">
+//           <div class="receipt-label">Amount Paid:</div>
+//           <div class="receipt-value">${formatCurrency(payment.amount)}</div>
+//         </div>
+//         <div class="receipt-row">
+//           <div class="receipt-label">Status:</div>
+//           <div class="receipt-value">${payment.status}</div>
+//         </div>
+//       </div>
+//       <button class="btn btn-primary print-button">
+//         <i class="fas fa-print"></i> Print Receipt
+//       </button>
+//       <div class="receipt-footer">
+//         <p>Thank you for your payment.</p>
+//         <p>This is an electronic receipt, no signature required.</p>
+//       </div>
+//     </div>
+//   `;
 
-  // Show modal
-  receiptModal.style.display = 'block';
+//   // Show modal
+//   receiptModal.style.display = 'block';
 
-  // Close modal when clicking outside
-  receiptModal.addEventListener('click', (e) => {
-    if (e.target === receiptModal) {
-      receiptModal.style.display = 'none';
-    }
-  });
+//   // Close modal when clicking outside
+//   receiptModal.addEventListener('click', (e) => {
+//     if (e.target === receiptModal) {
+//       receiptModal.style.display = 'none';
+//     }
+//   });
 
-  // Print button functionality
-  const printButton = receiptModal.querySelector('.print-button');
-  printButton.addEventListener('click', () => {
-    // In a real app, this would open the print dialog
-    // For demo purposes, we'll just show a notification
-    showNotification('Print functionality would open the print dialog in a real application.', 'info');
-  });
-}
-
-// CONTINUE FROM HERE ----------------------------------------------
+//   // Print button functionality
+//   const printButton = receiptModal.querySelector('.print-button');
+//   printButton.addEventListener('click', () => {
+//     // In a real app, this would open the print dialog
+//     // For demo purposes, we'll just show a notification
+//     showNotification('Print functionality would open the print dialog in a real application.', 'info');
+//   });
+// }
 
 // Load events page content
 function loadEventsPage() {
   const eventsList = $('#events-list');
 
-  // Get events
   const events = getFromStorage('events') || [];
   // console.log(events);
 
@@ -802,9 +785,6 @@ function loadEventsPage() {
           
         </div>
       `;
-      // <button class="btn ${isAttending ? 'btn-success' : 'btn-primary'} btn-sm attend-btn" data-event-id="${event.event_id}">
-      //       ${isAttending ? '<i class="fas fa-check"></i> Attending' : 'Attend Event'}
-      // </button>
       eventsGrid.appendChild(eventItem);
     });
 

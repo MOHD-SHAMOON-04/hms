@@ -4,7 +4,6 @@ const db = require('../db');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-// Utility: Generate random 4-char base64 string
 const generateWardenId = () => Buffer.from(crypto.randomBytes(3)).toString('base64').slice(0, 4);
 
 // STUDENT SIGNUP

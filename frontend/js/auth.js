@@ -32,45 +32,24 @@ const login = async (credential, password, role) => {
   );
   const data = await response.json();
   console.log(data);
-  // expected data
-  // {
-  //   "success": true,
-  //   "message": "Login successful",
-  //   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjAwMSIsInJvb21OdW1iZXIiOm51bGwsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzQ1Mzg4NDQzLCJleHAiOjE3NDUzOTAyNDN9.fgLCYhRqJlu9wAS9gTEBTCc3Iy7l1prTf7zQG8enpmk"
-  // }
 
   if (!data.success) {
     return data;
   }
 
-  // decode the token
   const decodedToken = atob(data.token.split('.')[1]);
-  // parse the decoded token
   const parsedToken = JSON.parse(decodedToken);
-  // expected parsed payload of token
-  //   {
-  //    "student_id": 202308223 | null,
-  //     "email": admin@mail.com | null,
-  //     "name": "user001",
-  //     "roomNumber": null | number,
-  //     "role": "student" | "warden",
-  //     "iat": 1745388443,
-  //     "exp": 1745390243
-  // }
   let userData = {
     role: parsedToken.role,
     name: parsedToken.name,
     token: data.token
   };
   if (parsedToken.role == 'student') {
-    // add student specific data to userData
     userData.studentId = parsedToken.student_id;
     userData.roomNumber = parsedToken.roomNumber;
   } else {
-    // add warden specific data to userData
     userData.email = parsedToken.email;
   }
-  // save user data to local storage
   currentUser = userData;
   saveToStorage('currentUser', userData);
   return { success: data.success, user: userData };

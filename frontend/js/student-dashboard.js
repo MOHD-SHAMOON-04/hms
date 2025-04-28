@@ -13,13 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize dashboard
   initializeDashboard();
-  
+
   // Add event listeners for navigation
   setupNavigation();
-  
+
   // Setup user dropdown
   setupUserDropdown();
-  
+
   // Initialize page-specific content
   loadOverviewPage();
   loadRoomPage();
@@ -31,16 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
 // Initialize dashboard with user data
 function initializeDashboard() {
   const user = getCurrentUser();
-  
+
   // Set room number in overview
   $('#room-number').textContent = `Room ${user.roomNumber}`;
-  
+  // Set hostel name in overview
+  $('#hostel-name').textContent = `Hostel ${user.hostelId}`;
+
   // Load maintenance requests count
   const maintenanceRequests = getFromStorage('maintenanceRequests') || [];
-  const userRequests = maintenanceRequests.filter(req => req.userId === user.id);
-  const pendingRequests = userRequests.filter(req => req.status !== 'Completed');
-  $('#pending-requests').textContent = pendingRequests.length;
-  
+  $('#pending-requests').textContent = maintenanceRequests.length;
+
   // Load upcoming events count
   const events = getFromStorage('events') || [];
   const upcomingEvents = events.filter(event => new Date(event.date) > new Date());
@@ -51,22 +51,22 @@ function initializeDashboard() {
 function setupNavigation() {
   const sidebarItems = document.querySelectorAll('.sidebar-item');
   const pages = document.querySelectorAll('.page-content');
-  
+
   sidebarItems.forEach(item => {
     item.addEventListener('click', () => {
       // Remove active class from all items
       sidebarItems.forEach(i => i.classList.remove('active'));
-      
+
       // Add active class to clicked item
       item.classList.add('active');
-      
+
       // Hide all pages
       pages.forEach(page => page.classList.add('hidden'));
-      
+
       // Show the selected page
       const pageName = item.getAttribute('data-page');
       $(`#${pageName}-page`).classList.remove('hidden');
-      
+
       // Update page title
       $('#page-title').textContent = item.querySelector('span').textContent;
     });
@@ -77,18 +77,18 @@ function setupNavigation() {
 function setupUserDropdown() {
   const dropdown = $('.user-dropdown-toggle');
   const menu = $('.user-dropdown-menu');
-  
+
   dropdown.addEventListener('click', () => {
     menu.classList.toggle('show');
   });
-  
+
   // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
     if (!dropdown.contains(e.target)) {
       menu.classList.remove('show');
     }
   });
-  
+
   // Logout button
   $('.logout-btn').addEventListener('click', logout);
 }
@@ -99,7 +99,7 @@ function loadOverviewPage() {
   const user = getCurrentUser();
 
   // what can we add in place of activites
-  
+
   // Create some sample activities
   const activities = [
     {
@@ -107,21 +107,21 @@ function loadOverviewPage() {
       message: 'Welcome to the Hostel Management System!',
       date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2) // 2 days ago
     },
-    {
-      type: 'success',
-      message: 'Your rent payment was received.',
-      date: new Date(Date.now() - 1000 * 60 * 60 * 24) // 1 day ago
-    },
+    // {
+    //   type: 'success',
+    //   message: 'Your rent payment was received.',
+    //   date: new Date(Date.now() - 1000 * 60 * 60 * 24) // 1 day ago
+    // },
     {
       type: 'warning',
-      message: 'Maintenance request status updated to "In Progress"',
+      message: 'Maintenance request from your room has been received.',
       date: new Date() // Today
     }
   ];
-  
+
   // Clear current activities
   activityList.innerHTML = '';
-  
+
   // Add activities to the list
   activities.forEach(activity => {
     const activityItem = document.createElement('div');
@@ -137,7 +137,7 @@ function loadOverviewPage() {
     `;
     activityList.appendChild(activityItem);
   });
-  
+
   // Add some styling to activity items
   const style = document.createElement('style');
   style.textContent = `
@@ -184,16 +184,17 @@ function loadOverviewPage() {
 function loadRoomPage() {
   const roomDetails = $('#room-details');
   const user = getCurrentUser();
-  
+
   // Get room data
-  const rooms = getFromStorage('rooms') || []; // make it room and store only the stud's room
-  const room = rooms.find(r => r.number === user.roomNumber);
-  
+  const room = getFromStorage('roomDetails') || {};
+  // console.log(room);
+
+
   if (room) {
     roomDetails.innerHTML = `
       <div class="room-card">
         <div class="room-header">
-          <h3>Room ${room.number}</h3>
+          <h3>Room ${room.roomNumber}</h3>
           <span class="badge badge-${room.occupiedBeds.length === room.capacity ? 'error' : 'success'}">
             ${room.occupiedBeds.length === room.capacity ? 'Full' : 'Available'}
           </span>
@@ -201,11 +202,7 @@ function loadRoomPage() {
         <div class="room-info">
           <div class="room-info-item">
             <span class="label">Floor:</span>
-            <span class="value">${room.floor}</span>
-          </div>
-          <div class="room-info-item">
-            <span class="label">Type:</span>
-            <span class="value">${room.type}</span>
+            <span class="value">${room.roomNumber % 100}</span>
           </div>
           <div class="room-info-item">
             <span class="label">Capacity:</span>
@@ -224,7 +221,7 @@ function loadRoomPage() {
         </div>
       </div>
     `;
-    
+
     // Add some styling for the room card
     const style = document.createElement('style');
     style.textContent = `
@@ -318,21 +315,21 @@ function loadRoomPage() {
 function getBedLayout(room) {
   const user = getCurrentUser();
   const beds = ['A', 'B', 'C', 'D', 'E', 'F'];
-  
+
   let bedLayout = '';
-  
+
   for (let i = 0; i < room.capacity; i++) {
     const bedLetter = beds[i];
     const isOccupied = room.occupiedBeds.includes(bedLetter);
     const isCurrent = user.bedNumber === bedLetter;
-    
+
     bedLayout += `
       <div class="bed ${isCurrent ? 'current' : isOccupied ? 'occupied' : 'vacant'}">
         Bed ${bedLetter}
       </div>
     `;
   }
-  
+
   return bedLayout;
 }
 
@@ -340,14 +337,13 @@ function getBedLayout(room) {
 function loadMaintenancePage() {
   const maintenanceList = $('#maintenance-list');
   const user = getCurrentUser();
-  
+
   // Get maintenance requests
-  const requests = getFromStorage('maintenanceRequests') || []; // modify this shit
-  const userRequests = requests.filter(req => req.userId === user.id); // modify this shit
-  
+  const userRequests = getFromStorage('maintenanceRequests') || [];
+
   // Clear current list
   maintenanceList.innerHTML = '';
-  
+
   if (userRequests.length === 0) {
     maintenanceList.innerHTML = `<p class="text-center">No maintenance requests found.</p>`;
   } else {
@@ -358,24 +354,20 @@ function loadMaintenancePage() {
       requestItem.innerHTML = `
         <div class="maintenance-header">
           <h3>${request.title}</h3>
-          <span class="badge badge-${
-            request.status === 'Completed' ? 'success' : 
-            request.status === 'In Progress' ? 'warning' : 
-            request.status === 'Rejected' ? 'error' : 'primary'
-          }">${request.status}</span>
+          <span class="badge badge-warning">Received</span>
         </div>
         <div class="maintenance-body">
           <p>${request.description}</p>
           <div class="maintenance-meta">
-            <span><i class="fas fa-calendar"></i> ${formatDate(request.createdAt)}</span>
-            <span><i class="fas fa-home"></i> Room ${request.roomNumber}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(request.created_date)}</span>
+            <span><i class="fas fa-home"></i> Room ${user.roomNumber}</span>
           </div>
         </div>
       `;
       maintenanceList.appendChild(requestItem);
     });
   }
-  
+
   // Add styling for maintenance items
   const style = document.createElement('style');
   style.textContent = `
@@ -432,7 +424,7 @@ function loadMaintenancePage() {
     }
   `;
   document.head.appendChild(style);
-  
+
   // Setup maintenance form
   setupMaintenanceForm();
 }
@@ -443,61 +435,80 @@ function setupMaintenanceForm() {
   const maintenanceModal = $('#maintenance-modal');
   const closeModal = $('.close-modal');
   const maintenanceForm = $('#maintenance-form');
-  
+
   // Show modal when button is clicked
   newMaintenanceBtn.addEventListener('click', () => {
     maintenanceModal.style.display = 'block';
   });
-  
+
   // Close modal when X is clicked
   closeModal.addEventListener('click', () => {
     maintenanceModal.style.display = 'none';
   });
-  
+
   // Close modal when clicking outside
   window.addEventListener('click', (e) => {
     if (e.target === maintenanceModal) {
       maintenanceModal.style.display = 'none';
     }
   });
-  
+
   // Submit form
   // make a POST request from here
-  maintenanceForm.addEventListener('submit', (e) => {
+  maintenanceForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const user = getCurrentUser();
     const title = $('#maintenance-title').value;
     const description = $('#maintenance-description').value;
-    
+
     // Create new maintenance request
     const newRequest = {
-      id: generateId(),
-      userId: user.id,
-      roomNumber: user.roomNumber,
+      complaint_id: generateId(),
+      student_id: user.studentId,
       title,
       description,
-      status: 'Received',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      created_date: new Date().toISOString()
     };
-    
+    console.log(newRequest);
+
+    // Send to server
+    const response = await fetch('http://localhost:3000/api/student/maintenance', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify(newRequest),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    // expected response from server
+    // {
+    //   "complaint_id": "ma1300pfju1pvgg0gtd",
+    //   "student_id": 202308223,
+    //   "title": "H2O filter not working",
+    //   "description": "since today morning..., please help",
+    //   "created_date": "2025-04-28T12:55:39.411Z"
+    // }
+
     // Save to storage
     const requests = getFromStorage('maintenanceRequests') || [];
-    requests.push(newRequest);
+    requests.push(data);
     saveToStorage('maintenanceRequests', requests);
-    
+
     // Update counter on overview page
-    const pendingRequests = requests.filter(req => req.userId === user.id && req.status !== 'Completed');
-    $('#pending-requests').textContent = pendingRequests.length;
-    
+    $('#pending-requests').textContent = requests.length;
+
     // Show notification
     showNotification('Maintenance request submitted successfully!', 'success');
-    
+
     // Close modal and reset form
     maintenanceModal.style.display = 'none';
     maintenanceForm.reset();
-    
+
     // Reload maintenance page
     loadMaintenancePage();
   });
@@ -507,30 +518,30 @@ function setupMaintenanceForm() {
 function loadPaymentsPage() {
   const paymentList = $('#payment-list');
   const user = getCurrentUser();
-  
+
   // Get payments
   const payments = getFromStorage('payments') || [];
   const userPayments = payments.filter(payment => payment.userId === user.id);
-  
+
   // Sort payments by date (newest first)
   userPayments.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
+
   // Calculate next payment date (first of next month)
   const nextDate = new Date();
   nextDate.setMonth(nextDate.getMonth() + 1);
   nextDate.setDate(1);
   $('#next-payment-date').textContent = formatDate(nextDate);
-  
+
   // Clear current list
   paymentList.innerHTML = '';
-  
+
   if (userPayments.length === 0) {
-    paymentList.innerHTML = `<p class="text-center">No payment history found.</p>`;
+    paymentList.innerHTML = `<p class="text-center">This feature will be available soon</p>`;
   } else {
     // Create payment table
     const table = document.createElement('table');
     table.className = 'payment-table';
-    
+
     // Add table header
     table.innerHTML = `
       <thead>
@@ -544,9 +555,9 @@ function loadPaymentsPage() {
       </thead>
       <tbody></tbody>
     `;
-    
+
     const tableBody = table.querySelector('tbody');
-    
+
     // Add payments to table
     userPayments.forEach(payment => {
       const row = document.createElement('tr');
@@ -559,9 +570,9 @@ function loadPaymentsPage() {
       `;
       tableBody.appendChild(row);
     });
-    
+
     paymentList.appendChild(table);
-    
+
     // Add event listeners for receipt buttons
     const receiptButtons = paymentList.querySelectorAll('.view-receipt');
     receiptButtons.forEach(button => {
@@ -571,7 +582,7 @@ function loadPaymentsPage() {
       });
     });
   }
-  
+
   // Add styling for payment table
   const style = document.createElement('style');
   style.textContent = `
@@ -665,18 +676,18 @@ function loadPaymentsPage() {
 function showReceipt(receiptNumber, payments) {
   // Find payment by receipt number
   const payment = payments.find(p => p.receiptNumber === receiptNumber);
-  
+
   if (!payment) return;
-  
+
   // Create modal if it doesn't exist
   let receiptModal = document.querySelector('.receipt-modal');
-  
+
   if (!receiptModal) {
     receiptModal = document.createElement('div');
     receiptModal.className = 'receipt-modal';
     document.body.appendChild(receiptModal);
   }
-  
+
   // Set modal content
   receiptModal.innerHTML = `
     <div class="receipt-content">
@@ -711,17 +722,17 @@ function showReceipt(receiptNumber, payments) {
       </div>
     </div>
   `;
-  
+
   // Show modal
   receiptModal.style.display = 'block';
-  
+
   // Close modal when clicking outside
   receiptModal.addEventListener('click', (e) => {
     if (e.target === receiptModal) {
       receiptModal.style.display = 'none';
     }
   });
-  
+
   // Print button functionality
   const printButton = receiptModal.querySelector('.print-button');
   printButton.addEventListener('click', () => {
@@ -731,34 +742,37 @@ function showReceipt(receiptNumber, payments) {
   });
 }
 
+// CONTINUE FROM HERE ----------------------------------------------
+
 // Load events page content
 function loadEventsPage() {
   const eventsList = $('#events-list');
-  
+
   // Get events
   const events = getFromStorage('events') || [];
-  
+  // console.log(events);
+
   // Sort events by date (soonest first)
-  events.sort((a, b) => new Date(a.date) - new Date(b.date));
-  
+  // events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
   // Filter for upcoming events
-  const upcomingEvents = events.filter(event => new Date(event.date) > new Date());
-  
+  const upcomingEvents = events.filter(event => new Date(event.date) >= new Date());
+
   // Clear current list
   eventsList.innerHTML = '';
-  
+
   if (upcomingEvents.length === 0) {
     eventsList.innerHTML = `<p class="text-center">No upcoming events found.</p>`;
   } else {
     // Create events grid
     const eventsGrid = document.createElement('div');
     eventsGrid.className = 'events-grid';
-    
+
     // Add events to grid
     upcomingEvents.forEach(event => {
-      const user = getCurrentUser();
-      const isAttending = event.attendees.includes(user.id);
-      
+      // const user = getCurrentUser();
+      // const isAttending = true;
+
       const eventItem = document.createElement('div');
       eventItem.className = 'event-card';
       eventItem.innerHTML = `
@@ -779,26 +793,27 @@ function loadEventsPage() {
               <span>${event.location}</span>
             </div>
           </div>
-          <button class="btn ${isAttending ? 'btn-success' : 'btn-primary'} btn-sm attend-btn" data-event-id="${event.id}">
-            ${isAttending ? '<i class="fas fa-check"></i> Attending' : 'Attend Event'}
-          </button>
+          
         </div>
       `;
+      // <button class="btn ${isAttending ? 'btn-success' : 'btn-primary'} btn-sm attend-btn" data-event-id="${event.event_id}">
+      //       ${isAttending ? '<i class="fas fa-check"></i> Attending' : 'Attend Event'}
+      // </button>
       eventsGrid.appendChild(eventItem);
     });
-    
+
     eventsList.appendChild(eventsGrid);
-    
+
     // Add event listeners for attend buttons
-    const attendButtons = eventsList.querySelectorAll('.attend-btn');
-    attendButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const eventId = button.getAttribute('data-event-id');
-        toggleEventAttendance(eventId, button);
-      });
-    });
+    // const attendButtons = eventsList.querySelectorAll('.attend-btn');
+    // attendButtons.forEach(button => {
+    //   button.addEventListener('click', () => {
+    //     const eventId = button.getAttribute('data-event-id');
+    //     toggleEventAttendance(eventId, button);
+    //   });
+    // });
   }
-  
+
   // Add styling for events
   const style = document.createElement('style');
   style.textContent = `
@@ -893,37 +908,37 @@ function loadEventsPage() {
 }
 
 // Toggle event attendance
-function toggleEventAttendance(eventId, button) {
-  const user = getCurrentUser();
-  const events = getFromStorage('events') || [];
-  
-  // Find event
-  const eventIndex = events.findIndex(e => e.id === eventId);
-  
-  if (eventIndex !== -1) {
-    const event = events[eventIndex];
-    
-    // Check if user is already attending
-    const attendeeIndex = event.attendees.indexOf(user.id);
-    
-    if (attendeeIndex === -1) {
-      // User is not attending, add them
-      event.attendees.push(user.id);
-      button.innerHTML = '<i class="fas fa-check"></i> Attending';
-      button.classList.remove('btn-primary');
-      button.classList.add('btn-success');
-      showNotification(`You're now attending ${event.title}!`, 'success');
-    } else {
-      // User is attending, remove them
-      event.attendees.splice(attendeeIndex, 1);
-      button.textContent = 'Attend Event';
-      button.classList.remove('btn-success');
-      button.classList.add('btn-primary');
-      showNotification(`You're no longer attending ${event.title}.`, 'info');
-    }
-    
-    // Save updated events
-    events[eventIndex] = event;
-    saveToStorage('events', events);
-  }
-}
+// function toggleEventAttendance(eventId, button) {
+//   const user = getCurrentUser();
+//   const events = getFromStorage('events') || [];
+
+//   // Find event
+//   const eventIndex = events.findIndex(e => e.id === eventId);
+
+//   if (eventIndex !== -1) {
+//     const event = events[eventIndex];
+
+//     // Check if user is already attending
+//     const attendeeIndex = event.attendees.indexOf(user.id);
+
+//     if (attendeeIndex === -1) {
+//       // User is not attending, add them
+//       event.attendees.push(user.id);
+//       button.innerHTML = '<i class="fas fa-check"></i> Attending';
+//       button.classList.remove('btn-primary');
+//       button.classList.add('btn-success');
+//       showNotification(`You're now attending ${event.title}!`, 'success');
+//     } else {
+//       // User is attending, remove them
+//       event.attendees.splice(attendeeIndex, 1);
+//       button.textContent = 'Attend Event';
+//       button.classList.remove('btn-success');
+//       button.classList.add('btn-primary');
+//       showNotification(`You're no longer attending ${event.title}.`, 'info');
+//     }
+
+//     // Save updated events
+//     events[eventIndex] = event;
+//     saveToStorage('events', events);
+//   }
+// }

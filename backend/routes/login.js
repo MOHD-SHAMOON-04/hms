@@ -19,6 +19,8 @@ router.post('/student', (req, res) => {
 
         const token = jwt.sign(
             {
+                student_id: user.student_id,
+                hostel_id: user.hostel_id,
                 name: user.username,
                 roomNumber: user.room_id,
                 role: 'student'
@@ -47,6 +49,7 @@ router.post('/warden', (req, res) => {
 
         const token = jwt.sign(
             {
+                email: user.email,
                 name: user.username,
                 role: 'warden'
             },

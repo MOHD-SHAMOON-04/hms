@@ -49,6 +49,8 @@ const login = async (credential, password, role) => {
   const parsedToken = JSON.parse(decodedToken);
   // expected parsed payload of token
   //   {
+  //    "student_id": 202308223 | null,
+  //     "email": admin@mail.com | null,
   //     "name": "user001",
   //     "roomNumber": null | number,
   //     "role": "student" | "warden",
@@ -61,9 +63,14 @@ const login = async (credential, password, role) => {
     token: data.token
   };
   if (parsedToken.role == 'student') {
-    // save user data to local storage
+    // add student specific data to userData
+    userData.studentId = parsedToken.student_id;
     userData.roomNumber = parsedToken.roomNumber;
+  } else {
+    // add warden specific data to userData
+    userData.email = parsedToken.email;
   }
+  // save user data to local storage
   currentUser = userData;
   saveToStorage('currentUser', userData);
   return { success: data.success, user: userData };

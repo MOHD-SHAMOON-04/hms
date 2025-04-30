@@ -84,7 +84,7 @@ function generateEventId() {
     return id;
 }
 
-router.post('/maintenance', (req, res) => {
+router.post('/add-event', (req, res) => {
     const { title, description, date, location, hostel_id } = req.body;
 
     if (!title || !description || !date || !location || !hostel_id) {

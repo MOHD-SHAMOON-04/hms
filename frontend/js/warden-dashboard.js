@@ -965,7 +965,7 @@ function setupAddEventForm() {
     // console.log(newEvent);
 
     // Save to server
-    const response = await fetch('http://localhost:3000/api/warden/maintenance/', {
+    const response = await fetch('http://localhost:3000/api/warden/add-event/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

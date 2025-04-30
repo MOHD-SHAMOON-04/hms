@@ -1,5 +1,3 @@
 .env
 node_modules
 rest/
-*.db
-*.sqlite3

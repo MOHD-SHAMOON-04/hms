@@ -1,5 +1,3 @@
-// Student Dashboard JavaScript
-
 // Ensure that only students can access this page
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize data
@@ -471,7 +469,7 @@ function setupMaintenanceForm() {
       description,
       created_date: new Date().toISOString()
     };
-    console.log(newRequest);
+    // console.log(newRequest);
 
     // Send to server
     const response = await fetch('http://localhost:3000/api/student/maintenance', {
@@ -484,7 +482,7 @@ function setupMaintenanceForm() {
     });
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
     // Save to storage
     const requests = getFromStorage('maintenanceRequests') || [];
@@ -564,15 +562,6 @@ function loadPaymentsPage() {
     });
 
     paymentList.appendChild(table);
-
-    // // Add event listeners for receipt buttons
-    // const receiptButtons = paymentList.querySelectorAll('.view-receipt');
-    // receiptButtons.forEach(button => {
-    //   button.addEventListener('click', () => {
-    //     const receiptNumber = button.getAttribute('data-receipt');
-    //     showReceipt(receiptNumber, userPayments);
-    //   });
-    // });
   }
 
   // Add styling for payment table
@@ -664,76 +653,6 @@ function loadPaymentsPage() {
   document.head.appendChild(style);
 }
 
-// // Show receipt modal
-// function showReceipt(receiptNumber, payments) {
-//   // Find payment by receipt number
-//   const payment = payments.find(p => p.receiptNumber === receiptNumber);
-
-//   if (!payment) return;
-
-//   // Create modal if it doesn't exist
-//   let receiptModal = document.querySelector('.receipt-modal');
-
-//   if (!receiptModal) {
-//     receiptModal = document.createElement('div');
-//     receiptModal.className = 'receipt-modal';
-//     document.body.appendChild(receiptModal);
-//   }
-
-//   // Set modal content
-//   receiptModal.innerHTML = `
-//     <div class="receipt-content">
-//       <div class="receipt-header">
-//         <h2>Payment Receipt</h2>
-//         <p>Receipt Number: ${payment.receiptNumber}</p>
-//       </div>
-//       <div class="receipt-body">
-//         <div class="receipt-row">
-//           <div class="receipt-label">Date:</div>
-//           <div class="receipt-value">${formatDate(payment.date)}</div>
-//         </div>
-//         <div class="receipt-row">
-//           <div class="receipt-label">Payment Type:</div>
-//           <div class="receipt-value">${payment.type}</div>
-//         </div>
-//         <div class="receipt-row">
-//           <div class="receipt-label">Amount Paid:</div>
-//           <div class="receipt-value">${formatCurrency(payment.amount)}</div>
-//         </div>
-//         <div class="receipt-row">
-//           <div class="receipt-label">Status:</div>
-//           <div class="receipt-value">${payment.status}</div>
-//         </div>
-//       </div>
-//       <button class="btn btn-primary print-button">
-//         <i class="fas fa-print"></i> Print Receipt
-//       </button>
-//       <div class="receipt-footer">
-//         <p>Thank you for your payment.</p>
-//         <p>This is an electronic receipt, no signature required.</p>
-//       </div>
-//     </div>
-//   `;
-
-//   // Show modal
-//   receiptModal.style.display = 'block';
-
-//   // Close modal when clicking outside
-//   receiptModal.addEventListener('click', (e) => {
-//     if (e.target === receiptModal) {
-//       receiptModal.style.display = 'none';
-//     }
-//   });
-
-//   // Print button functionality
-//   const printButton = receiptModal.querySelector('.print-button');
-//   printButton.addEventListener('click', () => {
-//     // In a real app, this would open the print dialog
-//     // For demo purposes, we'll just show a notification
-//     showNotification('Print functionality would open the print dialog in a real application.', 'info');
-//   });
-// }
-
 // Load events page content
 function loadEventsPage() {
   const eventsList = $('#events-list');
@@ -742,7 +661,7 @@ function loadEventsPage() {
   // console.log(events);
 
   // Sort events by date (soonest first)
-  // events.sort((a, b) => new Date(a.date) - new Date(b.date));
+  events.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   // Filter for upcoming events
   const upcomingEvents = events.filter(event => new Date(event.date) >= new Date());
@@ -789,15 +708,6 @@ function loadEventsPage() {
     });
 
     eventsList.appendChild(eventsGrid);
-
-    // Add event listeners for attend buttons
-    // const attendButtons = eventsList.querySelectorAll('.attend-btn');
-    // attendButtons.forEach(button => {
-    //   button.addEventListener('click', () => {
-    //     const eventId = button.getAttribute('data-event-id');
-    //     toggleEventAttendance(eventId, button);
-    //   });
-    // });
   }
 
   // Add styling for events
@@ -892,39 +802,3 @@ function loadEventsPage() {
   `;
   document.head.appendChild(style);
 }
-
-// Toggle event attendance
-// function toggleEventAttendance(eventId, button) {
-//   const user = getCurrentUser();
-//   const events = getFromStorage('events') || [];
-
-//   // Find event
-//   const eventIndex = events.findIndex(e => e.id === eventId);
-
-//   if (eventIndex !== -1) {
-//     const event = events[eventIndex];
-
-//     // Check if user is already attending
-//     const attendeeIndex = event.attendees.indexOf(user.id);
-
-//     if (attendeeIndex === -1) {
-//       // User is not attending, add them
-//       event.attendees.push(user.id);
-//       button.innerHTML = '<i class="fas fa-check"></i> Attending';
-//       button.classList.remove('btn-primary');
-//       button.classList.add('btn-success');
-//       showNotification(`You're now attending ${event.title}!`, 'success');
-//     } else {
-//       // User is attending, remove them
-//       event.attendees.splice(attendeeIndex, 1);
-//       button.textContent = 'Attend Event';
-//       button.classList.remove('btn-success');
-//       button.classList.add('btn-primary');
-//       showNotification(`You're no longer attending ${event.title}.`, 'info');
-//     }
-
-//     // Save updated events
-//     events[eventIndex] = event;
-//     saveToStorage('events', events);
-//   }
-// }

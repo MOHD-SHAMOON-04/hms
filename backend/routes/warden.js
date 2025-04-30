@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// POST /api/warden/init
 router.post('/init', (req, res) => {
     const { email } = req.body;
 
@@ -69,6 +68,58 @@ router.post('/init', (req, res) => {
                             });
                         });
                     });
+                });
+            });
+        });
+    });
+});
+
+// Helper to generate 4-character event ID
+function generateEventId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let id = 'E';
+    for (let i = 0; i < 3; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return id;
+}
+
+router.post('/maintenance', (req, res) => {
+    const { title, description, date, location, hostel_id } = req.body;
+
+    if (!title || !description || !date || !location || !hostel_id) {
+        return res.json({ success: false, message: 'Missing required fields' });
+    }
+
+    const event_id = generateEventId();
+
+    db.serialize(() => {
+        // Insert into Events table
+        db.run(`
+            INSERT INTO Events (event_id, title, description, date, location)
+            VALUES (?, ?, ?, ?, ?)
+        `, [event_id, title, description, date, location], function (errEvent) {
+            if (errEvent) {
+                return res.json({ success: false, message: 'Error inserting event' });
+            }
+
+            // Insert into Events_R_Hostel mapping table
+            db.run(`
+                INSERT INTO Events_R_Hostel (event_id, hostel_id)
+                VALUES (?, ?)
+            `, [event_id, hostel_id], function (errMapping) {
+                if (errMapping) {
+                    return res.json({ success: false, message: 'Error linking event to hostel' });
+                }
+
+                return res.json({
+                    success: true,
+                    event_id,
+                    title,
+                    description,
+                    date,
+                    location,
+                    hostel_id
                 });
             });
         });

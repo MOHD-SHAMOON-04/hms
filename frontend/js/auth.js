@@ -1,5 +1,3 @@
-// Authentication related functions
-
 // Store for current user
 let currentUser = null;
 
@@ -31,7 +29,7 @@ const login = async (credential, password, role) => {
     }
   );
   const data = await response.json();
-  console.log(data);
+  // console.log(data);
 
   if (!data.success) {
     return data;
@@ -101,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const credential = document.getElementById('credentials').value;
         const password = document.getElementById('password').value;
         const role = document.getElementById('role').value;
-        console.log(role);
+        // console.log(role);
 
         const result = await login(credential, password, role);
 

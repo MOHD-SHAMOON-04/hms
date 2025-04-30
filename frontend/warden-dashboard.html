@@ -7,6 +7,7 @@
   <title>Warden Dashboard - Hostel Management System</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/database-admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -51,6 +52,16 @@
         <div class="sidebar-item" data-page="events">
           <i class="fas fa-calendar-alt"></i>
           <span>Events</span>
+        </div>
+
+        <div class="sidebar-item" data-page="database">
+          <i class="fas fa-database"></i>
+          <span>Database Admin</span>
+        </div>
+
+        <div class="sidebar-item" data-page="schema">
+          <i class="fas fa-table"></i>
+          <span>Schemas</span>
         </div>
 
       </div>
@@ -428,6 +439,46 @@
           </div>
         </div>
       </div>
+
+      <!-- Database Admin Page -->
+      <div class="page-content hidden" id="database-page">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Database Admin</h2>
+          </div>
+          <div class="panel-body">
+            <div class="database-container">
+              <div class="database-query-area">
+                <textarea id="database-query-input" class="database-textarea"
+                  placeholder="Write your SQL query here..."></textarea>
+                <button id="database-run-btn" class="database-button">Run Query</button>
+              </div>
+              <div id="database-output" class="database-output">
+                <p>Output will be displayed here.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Database Schema Page -->
+      <div class="page-content hidden" id="schema-page">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Database Schema Viewer</h2>
+            <button class="btn btn-primary" id="refresh-schema-btn">
+              <i class="fas fa-refresh"></i> Refresh
+            </button>
+          </div>
+          <div class="panel-body">
+            <div id="database-schema-list" class="database-schema-list">
+              <p>Loading schema...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
   </div>
 
@@ -481,6 +532,7 @@
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/warden-dashboard.js"></script>
+  <script src="js/database-admin.js"></script>
 </body>
 
 </html>

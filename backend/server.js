@@ -3,9 +3,9 @@ const express = require('express');
 const signupRoutes = require('./routes/signup');
 const loginRoutes = require('./routes/login');
 const queryRoute = require('./routes/query');
+const schemaRoutes = require("./routes/schema");
 const studentRoutes = require('./routes/student');
 const wardenRoutes = require('./routes/warden');
-const db = require('./db');
 const cors = require('cors');
 const app = express();
 
@@ -21,6 +21,7 @@ app.use('/api/signup', signupRoutes);
 app.use('/api/login', loginRoutes);
 
 app.use('/api/query', queryRoute);
+app.use("/api", schemaRoutes);
 
 app.use('/api/student', studentRoutes);
 app.use('/api/warden', wardenRoutes);

@@ -1,5 +1,3 @@
-// Utility functions for the Hostel Management System
-
 // DOM helper functions
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
@@ -107,7 +105,7 @@ const initializeData = async () => {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (data.success) {
       showNotification('Data Fetched Successfully', 'success');
       const newUserData = {
@@ -142,7 +140,7 @@ const initializeData = async () => {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (data.success) {
       showNotification('Data Fetched Successfully', 'success');
       const numberOfStudents = data.rooms.reduce((total, room) => total + room.student_count, 0);

@@ -1,4 +1,4 @@
-# HMS - Hostel Managemanet System
+# HMS - Hostel Management System
 
 ---
 
